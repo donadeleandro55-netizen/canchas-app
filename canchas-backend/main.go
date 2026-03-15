@@ -21,6 +21,7 @@ func main() {
 	r.Use(cors.New(cors.Config{
     AllowOrigins: []string{
         "http://localhost:5173",
+        "https://canchas-app-frontend.vercel.app",
         "https://canchas-app-frontend-ndxi9240o.vercel.app",
         "https://canchas-app-frontend-2hprogxk5.vercel.app",
     },
