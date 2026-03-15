@@ -19,11 +19,15 @@ func main() {
 
 	// CORS — permite que el frontend hable con el backend
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
-		AllowCredentials: true,
-	}))
+    AllowOrigins: []string{
+        "http://localhost:5173",
+        "https://canchas-app-frontend-ndxi9240o.vercel.app",
+        "https://canchas-app-frontend-2hprogxk5.vercel.app",
+    },
+    AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+    AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+    AllowCredentials: true,
+}))
 
 	routes.Registrar(r)
 
