@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-import { todasReservas, cancelarReservaAdmin } from '../../services/reservaService'
-import { reportes } from '../../services/reservaService'
+import { todasReservas, cancelarReservaAdmin, reportes } from '../../services/reservaService'
 
 export default function Dashboard() {
   const { usuario, cerrarSesion } = useAuth()
@@ -55,17 +54,17 @@ export default function Dashboard() {
     <div className="min-h-screen bg-cy-black">
 
       {/* Header admin */}
-      <div className="bg-cy-gray border-b border-cy-gray2 px-6 py-4">
+      <div className="bg-cy-gray border-b border-cy-gray2 px-4 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-cy-green rounded-lg flex items-center justify-center text-base">⚽</div>
             <span className="text-lg font-medium text-cy-white">
               Cancha<span className="text-cy-green-light">Ya</span>
             </span>
             <span className="bg-cy-green text-white text-xs font-medium px-2 py-0.5 rounded-full">ADMIN</span>
           </div>
-          <div className="flex items-center gap-4">
-            <span className="text-cy-muted text-sm">Hola, <span className="text-cy-white">{usuario?.nombre}</span></span>
+          <div className="flex items-center gap-2">
+            <span className="text-cy-muted text-sm hidden sm:inline">Hola, <span className="text-cy-white">{usuario?.nombre}</span></span>
             <button
               onClick={handleLogout}
               className="text-cy-muted text-sm border border-cy-gray3 px-3 py-1.5 rounded-lg hover:border-red-800 hover:text-red-400 transition-colors"
@@ -76,17 +75,17 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-6">
 
         {/* Stats */}
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
             <div className="bg-cy-gray border border-cy-gray2 rounded-xl p-4">
               <div className="text-2xl font-medium text-cy-white">{stats.total_reservas}</div>
               <div className="text-cy-muted text-xs mt-1">Reservas totales</div>
             </div>
             <div className="bg-cy-gray border border-cy-gray2 rounded-xl p-4">
-              <div className="text-2xl font-medium text-cy-green-light">${stats.ingresos_totales?.toLocaleString()}</div>
+              <div className="text-xl font-medium text-cy-green-light">${stats.ingresos_totales?.toLocaleString()}</div>
               <div className="text-cy-muted text-xs mt-1">Ingresos totales</div>
             </div>
             <div className="bg-cy-gray border border-cy-gray2 rounded-xl p-4">
@@ -101,12 +100,12 @@ export default function Dashboard() {
         )}
 
         {/* Tabs */}
-        <div className="flex gap-0 border-b border-cy-gray2 mb-6">
+        <div className="flex gap-0 border-b border-cy-gray2 mb-6 overflow-x-auto">
           {['reservas', 'canchas', 'clientes'].map(t => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`px-5 py-3 text-sm border-b-2 transition-colors capitalize ${
+              className={`px-4 py-3 text-sm border-b-2 transition-colors whitespace-nowrap ${
                 tab === t
                   ? 'border-cy-green text-cy-green-light font-medium'
                   : 'border-transparent text-cy-muted hover:text-cy-white'
@@ -120,11 +119,11 @@ export default function Dashboard() {
         {/* Tab Reservas */}
         {tab === 'reservas' && (
           <div>
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center mb-4 gap-3">
               <h2 className="text-cy-white font-medium">Todas las reservas</h2>
               <button
                 onClick={() => navigate('/admin/reserva-manual')}
-                className="bg-cy-green text-white text-sm px-4 py-2 rounded-lg hover:bg-cy-green-dark transition-colors font-medium"
+                className="bg-cy-green text-white text-xs px-3 py-2 rounded-lg hover:bg-cy-green-dark transition-colors font-medium whitespace-nowrap"
               >
                 + Reserva manual
               </button>
@@ -136,18 +135,19 @@ export default function Dashboard() {
             ) : (
               <div className="space-y-3">
                 {reservas.map(r => (
-                  <div key={r.id} className="bg-cy-gray border border-cy-gray2 rounded-xl p-4 flex justify-between items-center gap-4">
-                    <div className="flex gap-4 items-center">
+                  <div key={r.id} className="bg-cy-gray border border-cy-gray2 rounded-xl p-4">
+                    <div className="flex gap-3 items-start">
                       <div className="w-9 h-9 bg-green-950 rounded-lg flex items-center justify-center text-lg flex-shrink-0">
                         🏟️
                       </div>
-                      <div>
-                        <div className="text-cy-white text-sm font-medium">{r.nombre_cliente}</div>
-                        <div className="text-cy-muted text-xs mt-0.5">{r.email_cliente}</div>
-                        <div className="text-cy-muted text-xs">{r.nombre_cancha} · {formatFecha(r.fecha)} · {r.hora_inicio} - {r.hora_fin}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-cy-white text-sm font-medium truncate">{r.nombre_cliente}</div>
+                        <div className="text-cy-muted text-xs mt-0.5 truncate">{r.email_cliente}</div>
+                        <div className="text-cy-muted text-xs mt-0.5">{r.nombre_cancha}</div>
+                        <div className="text-cy-muted text-xs">{formatFecha(r.fecha)} · {r.hora_inicio} - {r.hora_fin}</div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
+                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-cy-gray2">
                       <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
                         r.estado === 'confirmada'
                           ? 'bg-green-950 text-green-400'
@@ -175,11 +175,11 @@ export default function Dashboard() {
         {/* Tab Canchas */}
         {tab === 'canchas' && (
           <div>
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center mb-4 gap-3">
               <h2 className="text-cy-white font-medium">Gestión de canchas</h2>
               <button
                 onClick={() => navigate('/admin/canchas')}
-                className="bg-cy-green text-white text-sm px-4 py-2 rounded-lg hover:bg-cy-green-dark transition-colors font-medium"
+                className="bg-cy-green text-white text-xs px-3 py-2 rounded-lg hover:bg-cy-green-dark transition-colors font-medium whitespace-nowrap"
               >
                 + Nueva cancha
               </button>
@@ -193,11 +193,11 @@ export default function Dashboard() {
         {/* Tab Clientes */}
         {tab === 'clientes' && (
           <div>
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center mb-4 gap-3">
               <h2 className="text-cy-white font-medium">Clientes registrados</h2>
               <button
                 onClick={() => navigate('/admin/clientes')}
-                className="bg-cy-green text-white text-sm px-4 py-2 rounded-lg hover:bg-cy-green-dark transition-colors font-medium"
+                className="bg-cy-green text-white text-xs px-3 py-2 rounded-lg hover:bg-cy-green-dark transition-colors font-medium whitespace-nowrap"
               >
                 Ver todos
               </button>
@@ -211,9 +211,9 @@ export default function Dashboard() {
                     <div className="w-9 h-9 bg-cy-gray2 rounded-full flex items-center justify-center text-cy-green-light font-medium text-sm flex-shrink-0">
                       {r.nombre_cliente.charAt(0).toUpperCase()}
                     </div>
-                    <div>
-                      <div className="text-cy-white text-sm font-medium">{r.nombre_cliente}</div>
-                      <div className="text-cy-muted text-xs">{r.email_cliente}</div>
+                    <div className="min-w-0">
+                      <div className="text-cy-white text-sm font-medium truncate">{r.nombre_cliente}</div>
+                      <div className="text-cy-muted text-xs truncate">{r.email_cliente}</div>
                     </div>
                   </div>
                 ))}
