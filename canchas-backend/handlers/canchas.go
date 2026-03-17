@@ -12,7 +12,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-
 func ListarCanchas(c *gin.Context) {
 	col := config.DB.Collection("canchas")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -44,9 +43,6 @@ func EliminarCancha(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"mensaje": "Cancha desactivada"})
 }
 
-
-
-
 func ObtenerCancha(c *gin.Context) {
 	id, err := primitive.ObjectIDFromHex(c.Param("id"))
 	if err != nil {
@@ -67,7 +63,6 @@ func ObtenerCancha(c *gin.Context) {
 
 	c.JSON(http.StatusOK, cancha)
 }
-
 
 func CrearCancha(c *gin.Context) {
 	var cancha models.Cancha
@@ -112,6 +107,7 @@ func EditarCancha(c *gin.Context) {
 		Nombre      string  `json:"nombre"`
 		Descripcion string  `json:"descripcion"`
 		Precio      float64 `json:"precio"`
+		Foto        string  `json:"foto"`
 	}
 
 	if err := c.ShouldBindJSON(&body); err != nil {
@@ -138,6 +134,7 @@ func EditarCancha(c *gin.Context) {
 			"nombre":      body.Nombre,
 			"descripcion": body.Descripcion,
 			"precio":      body.Precio,
+			"foto":        body.Foto,
 		}},
 	)
 	if err != nil {
@@ -147,8 +144,6 @@ func EditarCancha(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"mensaje": "Cancha actualizada correctamente"})
 }
-
-
 
 func ListarCanchasConDisponibilidad(c *gin.Context) {
 	col := config.DB.Collection("canchas")
