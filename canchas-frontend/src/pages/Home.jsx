@@ -48,8 +48,22 @@ export default function Home() {
                 key={cancha.id}
                 className="bg-cy-gray border border-cy-gray2 rounded-xl overflow-hidden hover:border-cy-green transition-colors group"
               >
-                {/* Imagen placeholder */}
-                <div className="h-36 bg-gradient-to-br from-green-950 to-green-900 flex items-center justify-center text-5xl">
+                {/* Foto o placeholder */}
+                {cancha.foto ? (
+                  <img
+                    src={cancha.foto}
+                    alt={cancha.nombre}
+                    className="h-36 w-full object-cover"
+                    onError={(e) => {
+                      e.target.style.display = 'none'
+                      e.target.nextSibling.style.display = 'flex'
+                    }}
+                  />
+                ) : null}
+                <div
+                  className="h-36 bg-gradient-to-br from-green-950 to-green-900 items-center justify-center text-5xl"
+                  style={{ display: cancha.foto ? 'none' : 'flex' }}
+                >
                   🏟️
                 </div>
 

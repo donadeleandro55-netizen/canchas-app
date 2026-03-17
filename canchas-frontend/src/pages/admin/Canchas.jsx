@@ -7,7 +7,7 @@ export default function Canchas() {
   const navigate = useNavigate()
   const [canchas, setCanchas] = useState([])
   const [cargando, setCargando] = useState(true)
-  const [form, setForm] = useState({ nombre: '', descripcion: '', precio: '' })
+  const [form, setForm] = useState({ nombre: '', descripcion: '', precio: '', foto: '' })
   const [editando, setEditando] = useState(null)
   const [error, setError] = useState('')
   const [exito, setExito] = useState('')
@@ -38,7 +38,7 @@ export default function Canchas() {
         await api.post('/admin/canchas', { ...form, precio: parseFloat(form.precio) })
         setExito('Cancha creada correctamente')
       }
-      setForm({ nombre: '', descripcion: '', precio: '' })
+      setForm({ nombre: '', descripcion: '', precio: '', foto: '' })
       setEditando(null)
       cargarCanchas()
     } catch (err) {
@@ -50,7 +50,7 @@ export default function Canchas() {
 
   const handleEditar = (cancha) => {
     setEditando(cancha.id)
-    setForm({ nombre: cancha.nombre, descripcion: cancha.descripcion, precio: cancha.precio.toString() })
+    setForm({ nombre: cancha.nombre, descripcion: cancha.descripcion, precio: cancha.precio.toString(), foto: cancha.foto || '' })
     setError('')
     setExito('')
     window.scrollTo(0, 0)
@@ -68,7 +68,7 @@ export default function Canchas() {
 
   return (
     <div className="min-h-screen bg-cy-black">
-      <div className="bg-cy-gray border-b border-cy-gray2 px-6 py-4">
+      <div className="bg-cy-gray border-b border-cy-gray2 px-4 py-4">
         <div className="max-w-4xl mx-auto flex items-center gap-4">
           <button onClick={() => navigate('/admin')} className="text-cy-muted hover:text-cy-white text-sm transition-colors">
             ← Panel admin
@@ -78,7 +78,7 @@ export default function Canchas() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-6 py-8">
+      <div className="max-w-4xl mx-auto px-4 py-8">
 
         {/* Formulario */}
         <div className="bg-cy-gray border border-cy-gray2 rounded-xl p-6 mb-8">
@@ -122,7 +122,30 @@ export default function Canchas() {
                 className="w-full bg-cy-gray2 border border-cy-gray3 text-cy-white placeholder-cy-muted rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cy-green transition-colors"
               />
             </div>
-            <div className="flex gap-3">
+            <div>
+              <label className="text-cy-muted text-sm block mb-1">
+                Foto <span className="text-cy-gray3">(URL de imagen, opcional)</span>
+              </label>
+              <input
+                type="text"
+                value={form.foto}
+                onChange={(e) => setForm({ ...form, foto: e.target.value })}
+                placeholder="Ej: https://images.unsplash.com/..."
+                className="w-full bg-cy-gray2 border border-cy-gray3 text-cy-white placeholder-cy-muted rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cy-green transition-colors"
+              />
+              {/* Preview de la foto */}
+              {form.foto && (
+                <div className="mt-2 rounded-lg overflow-hidden h-32">
+                  <img
+                    src={form.foto}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                    onError={(e) => e.target.style.display = 'none'}
+                  />
+                </div>
+              )}
+            </div>
+            <div className="flex gap-3 flex-wrap">
               <button
                 type="submit"
                 disabled={guardando}
@@ -133,7 +156,7 @@ export default function Canchas() {
               {editando && (
                 <button
                   type="button"
-                  onClick={() => { setEditando(null); setForm({ nombre: '', descripcion: '', precio: '' }); setError(''); setExito('') }}
+                  onClick={() => { setEditando(null); setForm({ nombre: '', descripcion: '', precio: '', foto: '' }); setError(''); setExito('') }}
                   className="border border-cy-gray3 text-cy-muted px-6 py-2.5 rounded-lg text-sm hover:border-cy-white hover:text-cy-white transition-colors"
                 >
                   Cancelar edición
@@ -152,28 +175,35 @@ export default function Canchas() {
         ) : (
           <div className="space-y-3">
             {canchas.map(cancha => (
-              <div key={cancha.id} className="bg-cy-gray border border-cy-gray2 rounded-xl p-4 flex justify-between items-center gap-4">
-                <div className="flex gap-3 items-center">
-                  <div className="w-10 h-10 bg-green-950 rounded-lg flex items-center justify-center text-xl flex-shrink-0">🏟️</div>
-                  <div>
-                    <div className="text-cy-white text-sm font-medium">{cancha.nombre}</div>
-                    <div className="text-cy-muted text-xs mt-0.5">{cancha.descripcion}</div>
-                    <div className="text-cy-green-light text-xs font-medium mt-1">${cancha.precio.toLocaleString()}/h</div>
+              <div key={cancha.id} className="bg-cy-gray border border-cy-gray2 rounded-xl overflow-hidden">
+                {cancha.foto && (
+                  <img src={cancha.foto} alt={cancha.nombre} className="w-full h-32 object-cover" />
+                )}
+                <div className="p-4 flex justify-between items-center gap-4">
+                  <div className="flex gap-3 items-center">
+                    {!cancha.foto && (
+                      <div className="w-10 h-10 bg-green-950 rounded-lg flex items-center justify-center text-xl flex-shrink-0">🏟️</div>
+                    )}
+                    <div>
+                      <div className="text-cy-white text-sm font-medium">{cancha.nombre}</div>
+                      <div className="text-cy-muted text-xs mt-0.5">{cancha.descripcion}</div>
+                      <div className="text-cy-green-light text-xs font-medium mt-1">${cancha.precio.toLocaleString()}/h</div>
+                    </div>
                   </div>
-                </div>
-                <div className="flex gap-2 flex-shrink-0">
-                  <button
-                    onClick={() => handleEditar(cancha)}
-                    className="text-xs border border-cy-gray3 text-cy-muted px-3 py-1.5 rounded-lg hover:border-cy-green hover:text-cy-green-light transition-colors"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => handleDesactivar(cancha.id)}
-                    className="text-xs border border-red-800 text-red-400 px-3 py-1.5 rounded-lg hover:bg-red-950 transition-colors"
-                  >
-                    Desactivar
-                  </button>
+                  <div className="flex gap-2 flex-shrink-0">
+                    <button
+                      onClick={() => handleEditar(cancha)}
+                      className="text-xs border border-cy-gray3 text-cy-muted px-3 py-1.5 rounded-lg hover:border-cy-green hover:text-cy-green-light transition-colors"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => handleDesactivar(cancha.id)}
+                      className="text-xs border border-red-800 text-red-400 px-3 py-1.5 rounded-lg hover:bg-red-950 transition-colors"
+                    >
+                      Desactivar
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

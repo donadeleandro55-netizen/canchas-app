@@ -140,9 +140,13 @@ export default function Reservar() {
         </div>
 
         <div className="bg-cy-gray border border-cy-gray2 rounded-xl overflow-hidden mb-6">
-          <div className="h-32 bg-gradient-to-br from-green-950 to-green-900 flex items-center justify-center text-5xl">
-            🏟️
-          </div>
+         {cancha.foto ? (
+  <img src={cancha.foto} alt={cancha.nombre} className="h-32 w-full object-cover" />
+) : (
+  <div className="h-32 bg-gradient-to-br from-green-950 to-green-900 flex items-center justify-center text-5xl">
+    🏟️
+  </div>
+)}
           <div className="p-5 flex justify-between items-center">
             <div>
               <h2 className="text-cy-white font-medium">{cancha.nombre}</h2>
